@@ -1,16 +1,39 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ShopSideBar from '../layout/ShopSideBar';
 import Breadcrumb from './BreadCrumb';
 import ProductItem from './ProductItem';
+import { getProductsByCategory } from '../Api/productApi';
+
 
 const MainShop = () => {
+  const [selectedCategory, setSelectedCategory] = useState(''); 
+  const [products, setProducts] = useState([]); 
+
+  const fetchProducts = async (category) => {
+    if (category) {
+      const data = await getProductsByCategory(category);
+      if (data) setProducts(data);
+    } else {
+      setProducts([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts(selectedCategory);
+  }, [selectedCategory]); 
+
+  const handleCategoryChange = (category) => {
+    setSelectedCategory(category);
+    setProducts([]);
+  };
+
   return (
     <>
       <Breadcrumb />
       <section className="shop spad">
         <div className="container">
           <div className="row">
-            <ShopSideBar />
+            <ShopSideBar onCategoryChange={handleCategoryChange} />
             <div className="col-lg-9">
               <div className="shop__product__option">
                 <div className="row">
@@ -30,7 +53,7 @@ const MainShop = () => {
                 </div>
               </div>
               <div className="row">
-                <ProductItem />
+                <ProductItem products={products} />
               </div>
               <div class="row">
                         <div class="col-lg-12">

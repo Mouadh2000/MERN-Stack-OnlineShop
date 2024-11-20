@@ -35,7 +35,7 @@ const routes = [
     requiresAuth: true,
   },
   {
-    path: "/shop-details",
+    path: "/shop-details/:productId",
     element: <ShopDetails />,
   },
   {

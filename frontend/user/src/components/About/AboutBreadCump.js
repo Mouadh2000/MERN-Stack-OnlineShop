@@ -10,7 +10,7 @@ const AboutBreadcrumb = () => (
             <div className="breadcrumb__text">
               <h4>About Us</h4>
               <div className="breadcrumb__links">
-                <Link style={{textDecoration: 'none'}} to="/home">Home</Link>
+                <Link style={{textDecoration: 'none'}} to="/">Home</Link>
                 <span>About Us</span>
               </div>
             </div>

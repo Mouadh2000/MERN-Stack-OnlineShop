@@ -1,6 +1,6 @@
 import Banner from "./Banner";
 import HeroSection from "./HeroSection";
-import Categories from "./Categories";
+import Categories from "./BestDeals";
 import HomeShop from "./Shop/HomeShop";
 
 const Home = () => {

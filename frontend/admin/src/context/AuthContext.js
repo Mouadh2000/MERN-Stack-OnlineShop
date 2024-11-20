@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }) => {
 
       setCurrentAdmin(admin);
       setIsLoggedIn(true);
-      navigate("/admin/index");
+      navigate("/admin/dashboard");
     } catch (error) {
       throw error;
     }

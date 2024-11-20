@@ -7,15 +7,15 @@ const AddCategoryModal = ({ open, closeModal }) => {
     name: '',
     description: '',
     status: 'Inactive',
+    anime: false,
   };
 
   const [formData, setFormData] = useState(initialFormData);
-  const [isSubmitting, setIsSubmitting] = useState(false); 
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleInputChange = e => {
-    const { name, value, type } = e.target;
-    const newValue = type === 'number' ? parseInt(value) : value;
-    setFormData({ ...formData, [name]: newValue });
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleStatusToggle = () => {
@@ -25,14 +25,21 @@ const AddCategoryModal = ({ open, closeModal }) => {
     });
   };
 
+  const handleAnimeToggle = () => {
+    setFormData({
+      ...formData,
+      anime: !formData.anime,
+    });
+  };
+
   const handleSave = async () => {
-    setIsSubmitting(true); 
+    setIsSubmitting(true);
 
     try {
-      const result = await addCategory(formData);
-      resetFormAndCloseModal(); 
-      
+      await addCategory(formData);
+      resetFormAndCloseModal();
     } catch (error) {
+      // Handle error (you can add an alert or any error message here)
     } finally {
       setIsSubmitting(false);
     }
@@ -52,8 +59,8 @@ const AddCategoryModal = ({ open, closeModal }) => {
       </Modal.Header>
       <Modal.Body>
         <Form>
-          {/* Product Name */}
-          <Form.Group controlId="formProductName" style={{ marginBottom: '15px' }}>
+          {/* Category Name */}
+          <Form.Group controlId="formCategoryName" style={{ marginBottom: '15px' }}>
             <Form.Control
               type="text"
               placeholder="Category Name"
@@ -78,6 +85,7 @@ const AddCategoryModal = ({ open, closeModal }) => {
 
           {/* Status Toggle Button */}
           <Form.Group controlId="formStatus" style={{ marginBottom: '15px' }}>
+          <Form.Label>Status :</Form.Label>
             <Button
               onClick={handleStatusToggle}
               style={{
@@ -87,6 +95,22 @@ const AddCategoryModal = ({ open, closeModal }) => {
               }}
             >
               {formData.status === 'Active' ? 'Active' : 'Inactive'}
+            </Button>
+          </Form.Group>
+
+          {/* Anime Toggle Button */}
+          <Form.Group controlId="formAnime" style={{ marginBottom: '15px' }}>
+          <Form.Label>Is Anime :</Form.Label>
+
+            <Button
+              onClick={handleAnimeToggle}
+              style={{
+                width: '100%',
+                backgroundColor: formData.anime ? 'green' : 'red',
+                color: 'white',
+              }}
+            >
+              {formData.anime ? 'True' : 'False'}
             </Button>
           </Form.Group>
         </Form>

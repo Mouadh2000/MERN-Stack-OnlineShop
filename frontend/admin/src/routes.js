@@ -1,15 +1,18 @@
-import Index from "views/Index.js";
+import Dashboard from "components/Dashboard";
 import Profile from "components/Profile.js";
 import Login from "components/Login.js";
 import Clients from "components/Clients";
 import Categories from "components/Categories";
 import Staff from "components/Staff";
+import Animes from "components/Animes";
+import Clothes from "components/Clothes";
+import LuxeBath from "components/LuxeBath";
 var routes = [
   {
-    path: "/index",
+    path: "/dashboard",
     name: "Dashboard",
     icon: "ni ni-tv-2 text-primary",
-    component: <Index />,
+    component: <Dashboard />,
     layout: "/admin",
   },
   {
@@ -38,6 +41,27 @@ var routes = [
     name: "Categories",
     icon: "fa-solid fa-layer-group",
     component: <Categories />,
+    layout: "/admin",
+  },
+  {
+    path: "/animes",
+    name: "Animes",
+    icon: "fa-solid fa-palette text-red",
+    component: <Animes />,
+    layout: "/admin",
+  },
+  {
+    path: "/clothes",
+    name: "Clothes",
+    icon: "fa-solid fa-shirt text-blue",
+    component: <Clothes />,
+    layout: "/admin",
+  },
+  {
+    path: "/luxebath",
+    name: "Bath Products",
+    icon: "fa-solid fa-shower",
+    component: <LuxeBath />,
     layout: "/admin",
   },
   {

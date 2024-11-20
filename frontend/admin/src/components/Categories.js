@@ -96,6 +96,7 @@ const Categories = () => {
                     <th scope="col">Status</th>
                     <th scope="col">Created At</th>
                     <th scope="col">Updated At</th>
+                    <th scope="col">Is Anime</th>
                     <th scope="col">Action</th>
                   </tr>
                 </thead>
@@ -120,6 +121,20 @@ const Categories = () => {
                         </td>
                         <td>{new Date(category.created_at).toLocaleDateString()}</td>
                         <td>{new Date(category.updated_at).toLocaleDateString()}</td>
+                        <td>
+                          <span
+                            style={{
+                              backgroundColor: category.anime ? 'green' : 'red',
+                              color: 'white',
+                              padding: '5px 10px',
+                              borderRadius: '5px',
+                              fontWeight: 'bold',
+                            }}
+                          >
+                            {category.anime ? 'True' : 'False'}
+                          </span>
+                        </td>
+
                         <td>
                           <span
                             onClick={() => openUpdateModal(category)}  // Open update modal with the selected category

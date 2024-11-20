@@ -19,7 +19,7 @@ root.render(
           <Route path="/auth/*" element={<AuthLayout />} />
           <Route element={<PrivateRoutes/>}>
             <Route path="/admin/*" element={<AdminLayout />} />
-            <Route path="*" element={<Navigate to="/admin/index" replace />} />
+            <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
           </Route>
         </Routes>
   </AuthProvider>

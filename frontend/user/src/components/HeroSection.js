@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import OwlCarousel from 'react-owl-carousel';
 import 'owl.carousel/dist/assets/owl.carousel.css';
 import 'owl.carousel/dist/assets/owl.theme.default.css';
-import Image1 from '../assets/img/hero/anime-wallpaper1.jpg';
-import Image2 from '../assets/img/hero/anime-wallpaper2.jpeg';
+import Image1 from '../assets/img/hero/wallpaper1.jpg';
+import Image2 from '../assets/img/hero/wallpaper2.jpg';
 import WOW from 'wowjs';
 
 // Reusable HeroItem component
@@ -13,9 +13,8 @@ const HeroItem = ({ backgroundImage, title, description, socialLinks }) => (
       <div className="row">
         <div className="col-xl-5 col-lg-7 col-md-8">
           <div className="hero__text wow animate__animated animate__fadeIn animate__delay-0.1s">
-            <h2 style={{color: 'red'}}>{title}</h2>
-            <p style={{ color: 'white' }}>{description}</p>
-            <a href="#" className="primary-btn animate__animated animate__fadeIn animate__delay-0.2s">
+            <h2 style={{color: 'red', fontSize: '30px'}}>{title}</h2>
+            <a href="/shop" className="primary-btn animate__animated animate__fadeIn animate__delay-0.2s">
               Shop now <span className="arrow_right"></span>
             </a>
           </div>
@@ -47,14 +46,12 @@ const HeroSection = () => {
   const heroItems = [
     {
       backgroundImage: Image1,
-      title: 'Online Shopping',
-      description: 'A specialist label creating luxury essentials. Ethically crafted with an unwavering commitment to exceptional quality.',
+      title: 'Shopping Tounsi',
       
     },
     {
       backgroundImage: Image2,
-      title: 'Online Shopping',
-      description: 'A specialist label creating luxury essentials. Ethically crafted with an unwavering commitment to exceptional quality.',
+      title: 'Shopping Tounsi',
       
     },
   ];

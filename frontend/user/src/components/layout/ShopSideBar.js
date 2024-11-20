@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getAllCategory } from '../Api/categoryApi';
 
-const ShopSideBar = () => {
+const ShopSideBar = ({ onCategoryChange }) => {
     const [accordion, setAccordion] = useState({
         categories: true,
         branding: true,
@@ -26,16 +26,20 @@ const ShopSideBar = () => {
       }, []); 
 
 
-    const toggleAccordion = (section) => {
-        setAccordion({
-            ...accordion,
-            [section]: !accordion[section],
-        });
+      const toggleAccordion = (section) => {
+        setAccordion((prevState) => ({
+            ...prevState,
+            [section]: !prevState[section],
+        }));
     };
+    
 
     const linkStyle = {
         textDecoration: 'none',
     };
+    const handleCategoryClick = (category) => {
+        onCategoryChange(category); // Notify parent about category selection
+      };
 
     return (
         <div class="col-lg-3">
@@ -66,9 +70,9 @@ const ShopSideBar = () => {
                                     <div className="card-body">
                                         <div className="shop__sidebar__categories">
                                             <ul className="nice-scroll">
-                                                {categories.map((category) => (
+                                                {categories.filter(category => !category.anime).map((category) => (
                                                 <li key={category.id}>
-                                                    <a href="#" style={linkStyle}>{`${category.name}`}</a>
+                                                    <a href="#" onClick={() => handleCategoryClick(category._id)} style={linkStyle}>{`${category.name}`}</a>
                                                 </li>
                                                 ))}
                                             </ul>

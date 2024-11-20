@@ -4,12 +4,13 @@ class CategoryController {
 
     async createCategory(req, res) {
         try {
-        const { name, description, status } = req.body;
+        const { name, description, status, anime } = req.body;
 
         const newCategory = new Category({
             name,
             description,
             status,
+            anime,
         });
 
         const savedCategory = await newCategory.save();
@@ -73,11 +74,11 @@ class CategoryController {
     async updateCategory(req, res) {
         try {
         const categoryId = req.params.id;
-        const { name, description, status } = req.body;
+        const { name, description, status, anime } = req.body;
 
         const updatedCategory = await Category.findByIdAndUpdate(
             categoryId,
-            { name, description, status, updated_at: Date.now() },
+            { name, description, status, anime, updated_at: Date.now() },
             { new: true, runValidators: true }
         );
 

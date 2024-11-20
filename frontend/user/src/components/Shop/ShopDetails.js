@@ -1,15 +1,56 @@
-import React from 'react';
-import thumb1 from '../../assets/img/shop-details/thumb-1.png';
-import thumb2 from '../../assets/img/shop-details/thumb-2.png';
-import thumb3 from '../../assets/img/shop-details/thumb-3.png';
-import thumb4 from '../../assets/img/shop-details/thumb-4.png';
-import prod1 from '../../assets/img/shop-details/product-big.png';
-import prod2 from '../../assets/img/shop-details/product-big-2.png';
-import prod3 from '../../assets/img/shop-details/product-big-3.png';
-import prod4 from '../../assets/img/shop-details/product-big-4.png';
-
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { getProductsById } from '../Api/productApi';
+import { getAllCategory } from '../Api/categoryApi';
 
 const ShopDetails = () => {
+  const { productId } = useParams();
+  const [product, setProduct] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      setLoading(true);
+      try {
+        const data = await getProductsById(productId);
+        if (data) {
+          setProduct(data);
+        } else {
+          setError('Product not found');
+        }
+      } catch (err) {
+        setError('Failed to fetch product details');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProduct();
+  }, [productId]);
+  useEffect(() => {
+    const fetchCategories = async () => {
+        const fetchedCategories = await getAllCategory();
+        if (fetchedCategories) {
+            setCategories(fetchedCategories);
+        }
+    };
+
+    fetchCategories();
+  }, []);
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>{error}</p>;
+  }
+
+  if (!product) {
+    return <p>No product details available.</p>;
+  }
   return (
     <section className="shop-details">
       <div className="product__details__pic">
@@ -17,8 +58,8 @@ const ShopDetails = () => {
           <div className="row">
             <div className="col-lg-12">
               <div className="product__details__breadcrumb">
-                <a href="./index.html">Home</a>
-                <a href="./shop.html">Shop</a>
+                <a href="/">Home</a>
+                <a href="/shop">Shop</a>
                 <span>Product Details</span>
               </div>
             </div>
@@ -26,58 +67,37 @@ const ShopDetails = () => {
           <div className="row">
             <div className="col-lg-3 col-md-3">
               <ul className="nav nav-tabs" role="tablist">
-                <li className="nav-item">
-                  <a className="nav-link active" data-toggle="tab" href="#tabs-1" role="tab">
-                    <div className="product__thumb__pic set-bg" style={{ backgroundImage: `url(${thumb1})` }}></div>
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link" data-toggle="tab" href="#tabs-2" role="tab">
-                    <div className="product__thumb__pic set-bg" style={{ backgroundImage: `url(${thumb2})` }}></div>
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link" data-toggle="tab" href="#tabs-3" role="tab">
-                    <div className="product__thumb__pic set-bg" style={{ backgroundImage: `url(${thumb3})` }}></div>
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link" data-toggle="tab" href="#tabs-4" role="tab">
-                    <div className="product__thumb__pic set-bg" style={{ backgroundImage: `url(${thumb4})` }}>
-                      <i className="fa fa-play"></i>
-                    </div>
-                  </a>
-                </li>
+                {product.images.slice(0, 4).map((image, index) => (
+                  <li className="nav-item" key={index}>
+                    <a
+                      className={`nav-link ${index === 0 ? 'active' : ''}`}
+                      data-toggle="tab"
+                      href={`#tabs-${index + 1}`}
+                      role="tab"
+                    >
+                      <div
+                        className="product__thumb__pic set-bg"
+                        style={{ backgroundImage: `url(${image})` }}
+                      ></div>
+                    </a>
+                  </li>
+                ))}
               </ul>
             </div>
             <div className="col-lg-6 col-md-9">
               <div className="tab-content">
-                <div className="tab-pane active" id="tabs-1" role="tabpanel">
-                  <div className="product__details__pic__item">
-                    <img src={prod2} alt="" />
+                {product.images.slice(0, 4).map((image, index) => (
+                  <div
+                    className={`tab-pane ${index === 0 ? 'active' : ''}`}
+                    id={`tabs-${index + 1}`}
+                    role="tabpanel"
+                    key={index}
+                  >
+                    <div className="product__details__pic__item">
+                      <img src={image} alt={product.name} />
+                    </div>
                   </div>
-                </div>
-                <div className="tab-pane" id="tabs-2" role="tabpanel">
-                  <div className="product__details__pic__item">
-                    <img src={prod3} alt="" />
-                  </div>
-                </div>
-                <div className="tab-pane" id="tabs-3" role="tabpanel">
-                  <div className="product__details__pic__item">
-                    <img src={prod1} alt="" />
-                  </div>
-                </div>
-                <div className="tab-pane" id="tabs-4" role="tabpanel">
-                  <div className="product__details__pic__item">
-                    <img src={prod4} alt="" />
-                    <a
-                      href="https://www.youtube.com/watch?v=8PJ3_p7VqHw&list=RD8PJ3_p7VqHw&start_radio=1"
-                      className="video-popup"
-                    >
-                      <i className="fa fa-play"></i>
-                    </a>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
@@ -88,92 +108,56 @@ const ShopDetails = () => {
           <div className="row d-flex justify-content-center">
             <div className="col-lg-8">
               <div className="product__details__text">
-                <h4>Hooded thermal anorak</h4>
+                <h4>{product.name}</h4>
                 <div className="rating">
-                  <i className="fa fa-star"></i>
-                  <i className="fa fa-star"></i>
-                  <i className="fa fa-star"></i>
-                  <i className="fa fa-star"></i>
-                  <i className="fa fa-star-o"></i>
-                  <span> - 5 Reviews</span>
+                  {[...Array(5)].map((_, i) => (
+                    <i
+                      className={`fa ${i < product.rating ? 'fa-star' : 'fa-star-o'}`}
+                      key={i}
+                    ></i>
+                  ))}
+                  <span> - {product.rating} Reviews</span>
                 </div>
                 <h3>
-                  $270.00 <span>70.00</span>
+                  {product.price} DT <span>{product.discount > 0 ? `${product.discount} DT` : ''}</span>
                 </h3>
-                <p>
-                  Coat with quilted lining and an adjustable hood. Featuring long sleeves with adjustable cuff tabs,
-                  adjustable asymmetric hem with elastic side tabs and a front zip fastening with placket.
-                </p>
+                <p>{product.description}</p>
                 <div className="product__details__option">
                   <div className="product__details__option__size">
-                    <span>Size:</span>
-                    <label htmlFor="xxl">
-                      xxl
-                      <input type="radio" id="xxl" />
-                    </label>
-                    <label className="active" htmlFor="xl">
-                      xl
-                      <input type="radio" id="xl" />
-                    </label>
-                    <label htmlFor="l">
-                      l
-                      <input type="radio" id="l" />
-                    </label>
-                    <label htmlFor="sm">
-                      s
-                      <input type="radio" id="sm" />
-                    </label>
+                    <span>Size:</span> {product.size}
                   </div>
-                  <div className="product__details__option__color">
-                    <span>Color:</span>
-                    <label className="c-1" htmlFor="sp-1">
-                      <input type="radio" id="sp-1" />
-                    </label>
-                    <label className="c-2" htmlFor="sp-2">
-                      <input type="radio" id="sp-2" />
-                    </label>
-                    <label className="c-3" htmlFor="sp-3">
-                      <input type="radio" id="sp-3" />
-                    </label>
-                    <label className="c-4" htmlFor="sp-4">
-                      <input type="radio" id="sp-4" />
-                    </label>
-                    <label className="c-9" htmlFor="sp-9">
-                      <input type="radio" id="sp-9" />
-                    </label>
-                  </div>
+                  {product.color && (
+                    <div className="product__details__option__color">
+                      <span>Color:</span>
+                      {product.color.map((color, index) => (
+                        <label key={index} style={{ backgroundColor: color }}></label>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <div className="product__details__cart__option">
-                  <div className="quantity">
-                    <div className="pro-qty">
-                      <input type="text" value="1" />
-                    </div>
-                  </div>
                   <a href="#" className="primary-btn">
-                    add to cart
+                    Add to cart
                   </a>
                 </div>
                 <div className="product__details__btns__option">
                   <a href="#">
-                    <i className="fa fa-heart"></i> add to wishlist
+                    <i className="fa fa-heart"></i> Add to wishlist
                   </a>
-                  
                 </div>
                 <div className="product__details__last__option">
                   <h5>
                     <span>Guaranteed Safe Checkout</span>
                   </h5>
-                  <img src="img/shop-details/details-payment.png" alt="" />
                   <ul>
-                    <li>
-                      <span>SKU:</span> 3812912
-                    </li>
-                    <li>
-                      <span>Categories:</span> Clothes
-                    </li>
-                    <li>
-                      <span>Tag:</span> Clothes, Skin, Body
-                    </li>
+                  <li>
+                    <span>Category: </span> 
+                    {Array.isArray(categories?.data) 
+                      ? categories.data.find(category => category._id === product.category)?.name || 'Category not found' 
+                      : 'Categories data is not available'}
+                  </li>
+
+
                   </ul>
                 </div>
               </div>

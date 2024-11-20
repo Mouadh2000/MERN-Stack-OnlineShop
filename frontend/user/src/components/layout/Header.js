@@ -49,7 +49,7 @@ const Header = () => {
             <div className="col-lg-3 col-md-3">
               <div className="header__logo">
                 <Link to="./">
-                  <img src={logo} alt="Logo" style={{ width: '80px', height: '60px' , marginTop: '15px'}} />
+                  <img src={logo} alt="Logo" style={{ width: '150px', height: '150px' , marginTop: '-30px'}} />
                 </Link>
               </div>
             </div>

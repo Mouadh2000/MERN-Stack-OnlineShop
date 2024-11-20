@@ -19,7 +19,7 @@ const OffcanvasMenu = () => {
             <div className="row">
               <div className="col-lg-6 col-md-7">
                 <div className="header__top__left">
-                  <p>Anime Shop</p>
+                  <p>Shopping Tounsi</p>
                 </div>
               </div>
               <div className="col-lg-6 col-md-5">
