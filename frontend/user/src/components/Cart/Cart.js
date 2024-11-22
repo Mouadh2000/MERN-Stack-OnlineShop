@@ -82,7 +82,7 @@ const Cart = () => {
                         <div className="row">
                             <div className="col-lg-6 col-md-6 col-sm-6">
                                 <div className="continue__btn">
-                                    <a href="#">Continue Shopping</a>
+                                    <a href="/shop">Continue Shopping</a>
                                 </div>
                             </div>
                             <div className="col-lg-6 col-md-6 col-sm-6">

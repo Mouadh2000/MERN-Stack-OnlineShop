@@ -16,3 +16,20 @@ export const getProductsById = async (productId) => {
         return false;
     }
 };
+export const checkProductStock = async (productId) => {
+    try {
+        const response = await axiosInstance.get(`product/${productId}/stock`);
+        return response.data;
+    } catch (error) {
+        return false;
+    }
+};
+
+export const getAllProduct = async () => {
+    try {
+        const response = await axiosInstance.get('products/');
+        return response.data;
+    } catch (error) {
+        return false;
+    }
+};

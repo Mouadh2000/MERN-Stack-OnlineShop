@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Container, Row, Col, Form, Button } from 'react-bootstrap';
-import auth from '../../assets/img/authentication/authentication.jpeg';
+import { Container, Row, Col, Form, Button, Card } from 'react-bootstrap';
+import auth from '../../assets/img/authentication/authentication.jpg';
 import { useAuth } from '../../context/AuthContext';
 import Swal from 'sweetalert2';
 
@@ -9,7 +9,6 @@ const SignIn = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth(); // Use AuthContext
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -47,8 +46,8 @@ const SignIn = () => {
 
         {/* Right Side - Form */}
         <Col md={6} className="d-flex align-items-center justify-content-center">
-          <div className="w-75" style={{ 'margin-top': '-180px' }}>
-            <h2 className="text-center mb-4">Sign In</h2>
+          <Card className="w-75 shadow-lg p-4" style={{ borderRadius: '15px', marginTop: '-50px',backgroundColor: '#e9ecef'}}>
+            <h2 className="text-center mb-4" style={{color: "#007bff"}}>Sign In</h2>
             <Form onSubmit={handleSubmit}>
               <Form.Group controlId="formEmail" className="mb-3">
                 <Form.Label>Email address</Form.Label>
@@ -57,6 +56,7 @@ const SignIn = () => {
                   placeholder="Enter your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  required
                 />
               </Form.Group>
 
@@ -67,10 +67,11 @@ const SignIn = () => {
                   placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  required
                 />
               </Form.Group>
 
-              <Button variant="primary" type="submit" className="w-100 mb-3" disabled={loading}>
+              <Button variant="primary" type="submit" className="w-100 mb-3"  disabled={loading}>
                 {loading ? 'Signing In...' : 'Sign In'}
               </Button>
 
@@ -83,7 +84,7 @@ const SignIn = () => {
                 </p>
               </div>
             </Form>
-          </div>
+          </Card>
         </Col>
       </Row>
     </Container>

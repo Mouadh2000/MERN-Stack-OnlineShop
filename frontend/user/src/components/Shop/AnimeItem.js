@@ -1,32 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { heart, compare, search } from '../Icons/Icons';
 import { useNavigate } from 'react-router-dom';
-import { checkProductStock } from '../Api/productApi';  // Import the stock check API
+import { heart, compare, search } from '../Icons/Icons';
 
-const ProductItem = ({ products }) => {
+const AnimeItem = ({ products }) => {
   const navigate = useNavigate();
-  const [stockStatus, setStockStatus] = useState({});  // State to store stock status
 
   const handleRedirect = (productId) => {
-    navigate(`/shop-details/${productId}`);
+    navigate(`/anime-details/${productId}`);
   };
-
-  // Function to check stock for each product
-  const checkStock = async (productId) => {
-    const data = await checkProductStock(productId);
-    setStockStatus((prevState) => ({
-      ...prevState,
-      [productId]: data.inStock,  // Store the stock status for the specific product
-    }));
-  };
-
-  useEffect(() => {
-    // Call checkStock for each product when products are available
-    products.forEach((product) => {
-      checkStock(product._id);
-    });
-  }, [products]);  // Re-run when products change
 
   return (
     <>
@@ -59,35 +41,23 @@ const ProductItem = ({ products }) => {
               </div>
               <div className="product__item__text">
                 <h6>{product.name}</h6>
-                {/* Display stock status */}
-                <p style={{ color: stockStatus[product._id] ? 'green' : 'red' }}>
-                  {stockStatus[product._id] ? 'In Stock' : 'Out of Stock'}
-                </p>
-                <a href="#" className="add-cart">
-                  + Add To Cart
-                </a>
                 <div className="rating">
                   {[...Array(5)].map((_, i) => (
                     <i className={`fa ${i < product.rating ? 'fa-star' : 'fa-star-o'}`} key={i}></i>
                   ))}
                 </div>
-                <h5>{product.price} DT</h5>
               </div>
             </div>
           </div>
         ))
       ) : (
-        <p>No products available.</p>
+        <p>No anime products available.</p>
       )}
     </>
   );
 };
 
-ProductItem.defaultProps = {
-  products: [],
-};
-
-ProductItem.propTypes = {
+AnimeItem.propTypes = {
   products: PropTypes.arrayOf(
     PropTypes.shape({
       image: PropTypes.string.isRequired,
@@ -98,4 +68,4 @@ ProductItem.propTypes = {
   ),
 };
 
-export default ProductItem;
+export default AnimeItem;

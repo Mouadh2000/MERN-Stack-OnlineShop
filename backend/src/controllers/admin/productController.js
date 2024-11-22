@@ -1,5 +1,7 @@
 const Product = require('../../models/product');
 const ProductImage = require('../../models/productImages');
+const Anime = require('../../models/anime');
+const AnimeImage = require('../../models/animeImages');
 const fs = require('fs');
 const path = require('path');
 
@@ -21,7 +23,7 @@ class ProductController {
         this.discount = req.body.discount;
         this.stock_quantity = req.body.stock_quantity;
         this.size = req.body.size;  
-        this.color = req.body.color; 
+        this.colors = req.body.colors; 
         this.images = req.files;
 
         if (action === 'create') {
@@ -52,6 +54,20 @@ class ProductController {
     // Create a new product
     async createProduct() {
         try {
+            let colorArray = [];
+
+            // If colors are provided as a stringified array (e.g., '["#ffffff","#9b9b9b","#4a4a4a"]')
+            if (Array.isArray(this.colors)) {
+                colorArray = this.colors; // If it's already an array, use it directly
+            } else if (typeof this.colors === 'string') {
+                // If it's a stringified array, parse it into an actual array
+                try {
+                    colorArray = JSON.parse(this.colors);
+                } catch (error) {
+                    // If parsing fails, treat it as an empty array or handle it as per your logic
+                    colorArray = [];
+                }
+            }
             const newProduct = await this.Product.create({
                 name: this.name,
                 description: this.description,
@@ -61,7 +77,7 @@ class ProductController {
                 discount: this.discount,
                 stock_quantity: this.stock_quantity,
                 size: this.size,
-                color: this.color,
+                colors: colorArray,
             });
 
             if (this.images && this.images.length > 0) {
@@ -177,6 +193,20 @@ class ProductController {
 
     async updateProduct(id) {
         try {
+
+            let colorArray = [];
+
+            if (Array.isArray(this.colors)) {
+                colorArray = this.colors; // If it's already an array, use it directly
+            } else if (typeof this.colors === 'string') {
+                // If it's a stringified array, parse it into an actual array
+                try {
+                    colorArray = JSON.parse(this.colors);
+                } catch (error) {
+                    // If parsing fails, treat it as an empty array or handle it as per your logic
+                    colorArray = [];
+                }
+            }
             const product = await this.Product.findById(id);
 
             if (!product) {
@@ -191,7 +221,7 @@ class ProductController {
             product.discount = this.discount || product.discount;
             product.stock_quantity = this.stock_quantity || product.stock_quantity;
             product.size = this.size || product.size;
-            product.color = this.color || product.color;
+            product.colors = this.colors || colorArray;
 
             await product.save();
 
@@ -250,6 +280,24 @@ class ProductController {
     
             // Return success response
             this.res.status(204).send();
+        } catch (error) {
+            this.res.status(500).json({ error: error.message });
+        }
+    }
+
+    async checkStock(id) {
+        try {
+            const product = await this.Product.findById(id);
+    
+            if (!product) {
+                return this.res.status(404).json({ error: `Product not found` });
+            }
+    
+            if (product.stock_quantity > 0) {
+                return this.res.status(200).json({ inStock: true });
+            } else {
+                return this.res.status(200).json({ inStock: false });
+            }
         } catch (error) {
             this.res.status(500).json({ error: error.message });
         }

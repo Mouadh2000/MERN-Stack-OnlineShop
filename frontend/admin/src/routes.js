@@ -7,6 +7,7 @@ import Staff from "components/Staff";
 import Animes from "components/Animes";
 import Clothes from "components/Clothes";
 import LuxeBath from "components/LuxeBath";
+
 var routes = [
   {
     path: "/dashboard",
@@ -16,8 +17,8 @@ var routes = [
     layout: "/admin",
   },
   {
-    path: "/user-profile",
-    name: "User Profile",
+    path: "/profile",
+    name: "Profile",
     icon: "ni ni-single-02 text-yellow",
     component: <Profile />,
     layout: "/admin",
@@ -52,14 +53,14 @@ var routes = [
   },
   {
     path: "/clothes",
-    name: "Clothes",
+    name: "Clothes Products",
     icon: "fa-solid fa-shirt text-blue",
     component: <Clothes />,
     layout: "/admin",
   },
   {
     path: "/luxebath",
-    name: "Bath Products",
+    name: "Luxe Bath Products",
     icon: "fa-solid fa-shower",
     component: <LuxeBath />,
     layout: "/admin",

@@ -23,41 +23,69 @@ import {
   Row,
   Col,
 } from "reactstrap";
-import sidbarBgImage from '../../assets/img/zoro.jpeg';
-
-var ps;
 
 const Sidebar = (props) => {
-  const [collapseOpen, setCollapseOpen] = useState();
-  // verifies if routeName is the one active (in browser input)
+  const [collapseOpen, setCollapseOpen] = useState(false);
+
+  // Verifies if routeName is the one active (in browser input)
   const activeRoute = (routeName) => {
     return props.location.pathname.indexOf(routeName) > -1 ? "active" : "";
   };
-  // toggles collapse between opened and closed (true/false)
+
+  // Toggles collapse between opened and closed (true/false)
   const toggleCollapse = () => {
-    setCollapseOpen((data) => !data);
+    setCollapseOpen((prevState) => !prevState);
   };
-  // closes the collapse
+
+  // Closes the collapse
   const closeCollapse = () => {
     setCollapseOpen(false);
   };
-  // creates the links that appear in the left menu / Sidebar
+
+  // Creates the links that appear in the left menu / Sidebar
   const createLinks = (routes) => {
-    return routes.filter(prop => !(prop.path.toLowerCase() === "/login"  || prop.path.toLowerCase() === "/user-profile" )).map((prop, key) => {
-      return (
-        <NavItem key={key}>
-          <NavLink
-            to={prop.layout + prop.path}
-            tag={NavLinkRRD}
-            onClick={closeCollapse}
-          >
-            <i className={prop.icon} />
-            {prop.name}
-          </NavLink>
-        </NavItem>
-      );
-    });
+    const productsRoutes = routes.filter((prop) => prop.name.includes("Products"));
+    const otherRoutes = routes.filter(
+      (prop) => !(prop.name.includes("Products") || ['Login', 'Profile'].includes(prop.name))
+    );
+  
+    return (
+      <>
+        {/* Create other links first */}
+        {otherRoutes.map((prop, key) => (
+          <NavItem key={key}>
+            <NavLink to={prop.layout + prop.path} tag={NavLinkRRD} onClick={closeCollapse}>
+              <i className={prop.icon} />
+              {prop.name}
+            </NavLink>
+          </NavItem>
+        ))}
+  
+        {/* Create the dropdown for 'Products' */}
+        {productsRoutes.length > 0 && (
+          <NavItem>
+            <UncontrolledDropdown nav inNavbar>
+              <DropdownToggle nav caret>
+                <i className="fa-solid fa-gears" /> Products
+              </DropdownToggle>
+              <DropdownMenu left className="ml-4">
+                {productsRoutes.map((prop, key) => (
+                  <DropdownItem
+                    key={key}
+                    to={prop.layout + prop.path}
+                    tag={NavLinkRRD}
+                  >
+                    {prop.name.replace('Products', '').trim()}
+                  </DropdownItem>
+                ))}
+              </DropdownMenu>
+            </UncontrolledDropdown>
+          </NavItem>
+        )}
+      </>
+    );
   };
+  
 
   const { bgColor, routes, logo } = props;
   let navbarBrandProps;
@@ -74,28 +102,16 @@ const Sidebar = (props) => {
   }
 
   return (
-    <Navbar
-      className="navbar-vertical fixed-left navbar-light "
-      expand="md"
-      id="sidenav-main"
-    >
+    <Navbar className="navbar-vertical fixed-left navbar-light" expand="md" id="sidenav-main">
       <Container fluid>
         {/* Toggler */}
-        <button
-          className="navbar-toggler"
-          type="button"
-          onClick={toggleCollapse}
-        >
+        <button className="navbar-toggler" type="button" onClick={toggleCollapse}>
           <span className="navbar-toggler-icon" />
         </button>
         {/* Brand */}
         {logo ? (
           <NavbarBrand className="pt-0" {...navbarBrandProps}>
-            <img
-              alt={logo.imgAlt}
-              className="navbar-brand-img"
-              src={logo.imgSrc}
-            />
+            <img alt={logo.imgAlt} className="navbar-brand-img" src={logo.imgSrc} />
           </NavbarBrand>
         ) : null}
         {/* User */}
@@ -104,11 +120,7 @@ const Sidebar = (props) => {
             <DropdownToggle nav className="nav-link-icon">
               <i className="ni ni-bell-55" />
             </DropdownToggle>
-            <DropdownMenu
-              aria-labelledby="navbar-default_dropdown_1"
-              className="dropdown-menu-arrow"
-              right
-            >
+            <DropdownMenu aria-labelledby="navbar-default_dropdown_1" className="dropdown-menu-arrow" right>
               <DropdownItem>Action</DropdownItem>
               <DropdownItem>Another action</DropdownItem>
               <DropdownItem divider />
@@ -173,11 +185,7 @@ const Sidebar = (props) => {
                 </Col>
               ) : null}
               <Col className="collapse-close" xs="6">
-                <button
-                  className="navbar-toggler"
-                  type="button"
-                  onClick={toggleCollapse}
-                >
+                <button className="navbar-toggler" type="button" onClick={toggleCollapse}>
                   <span />
                   <span />
                 </button>
@@ -204,7 +212,6 @@ const Sidebar = (props) => {
           <Nav navbar>{createLinks(routes)}</Nav>
           {/* Divider */}
           <hr className="my-3" />
-
         </Collapse>
       </Container>
     </Navbar>
@@ -216,18 +223,12 @@ Sidebar.defaultProps = {
 };
 
 Sidebar.propTypes = {
-  // links that will be displayed inside the component
+  // Links displayed inside the component
   routes: PropTypes.arrayOf(PropTypes.object),
   logo: PropTypes.shape({
-    // innerLink is for links that will direct the user within the app
-    // it will be rendered as <Link to="...">...</Link> tag
     innerLink: PropTypes.string,
-    // outterLink is for links that will direct the user outside the app
-    // it will be rendered as simple <a href="...">...</a> tag
     outterLink: PropTypes.string,
-    // the image src of the logo
     imgSrc: PropTypes.string.isRequired,
-    // the alt for the img
     imgAlt: PropTypes.string.isRequired,
   }),
 };

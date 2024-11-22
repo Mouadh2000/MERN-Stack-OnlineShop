@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { Container, Row, Col, Form, Button } from 'react-bootstrap';
-import auth from '../../assets/img/authentication/authentication.jpeg';
+import { Container, Row, Col, Form, Button, Card } from 'react-bootstrap';
+import auth from '../../assets/img/authentication/authentication.jpg';
 import { signup } from '../Api/userApi';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
-
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -27,12 +26,12 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
       await signup(formData);
       Swal.fire({
         title: 'Success!',
-        text: 'registered successfully! check your mail to verify account',
+        text: 'Registered successfully! Check your mail to verify your account.',
         icon: 'success',
         confirmButtonText: 'OK'
       });
@@ -44,20 +43,16 @@ const SignUp = () => {
         password: '',
         gender: ''
       });
-      navigate("/sign-in")
-      
+      navigate("/sign-in");
     } catch (err) {
       let errorMessages = ['An error occurred during registration.'];
-      
+
       if (err.response && err.response.data) {
         if (Array.isArray(err.response.data.errors)) {
-          // If errors is an array, use it directly
           errorMessages = err.response.data.errors;
         } else if (typeof err.response.data.errors === 'object') {
-          // If errors is an object, format it into an array of messages
           errorMessages = Object.values(err.response.data.errors);
         } else if (typeof err.response.data.message === 'string') {
-          // If message is a string, use it as a single message
           errorMessages = [err.response.data.message];
         }
       }
@@ -91,8 +86,8 @@ const SignUp = () => {
 
         {/* Right Side - Form */}
         <Col md={6} className="d-flex align-items-center justify-content-center">
-          <div className="w-75" style={{ marginTop: '-10px' }}>
-            <h2 className="text-center mb-4">Sign Up</h2>
+          <Card className="w-75 shadow-lg p-4" style={{ borderRadius: '15px', backgroundColor: '#e9ecef' }}>
+            <h2 className="text-center mb-4" style={{ color: "#007bff" }}>Sign Up</h2>
             <Form onSubmit={handleSubmit}>
               <Form.Group controlId="formLast" className="mb-3">
                 <Form.Label>Last name</Form.Label>
@@ -103,7 +98,7 @@ const SignUp = () => {
                   value={formData.lastName}
                   onChange={handleChange}
                 />
-              </Form.Group> 
+              </Form.Group>
 
               <Form.Group controlId="formFirst" className="mb-3">
                 <Form.Label>First name</Form.Label>
@@ -125,7 +120,7 @@ const SignUp = () => {
                   value={formData.phoneNumber}
                   onChange={handleChange}
                 />
-              </Form.Group> 
+              </Form.Group>
 
               <Form.Group controlId="formEmail" className="mb-3">
                 <Form.Label>Email address</Form.Label>
@@ -180,7 +175,7 @@ const SignUp = () => {
                 Sign Up
               </Button>
             </Form>
-          </div>
+          </Card>
         </Col>
       </Row>
     </Container>

@@ -9,7 +9,8 @@ import {
 } from "reactstrap";
 import Header from "components/Headers/Header.js";
 import { getAllCategory } from 'api/categoryApi';
-import { getAllLuxeBathProduct, deleteLuxeBathProductById } from 'api/luxeBathApi';
+import { deleteLuxeBathProductById } from 'api/luxeBathApi';
+import { getAllProduct } from 'api/productApi';
 import AddLuxeBathModal from './Modals/LuxeBathModal/AddLuxeBathModal';
 import ShowLuxeBathModal from './Modals/LuxeBathModal/ShowLuxeBathModal';
 import UpdateLuxeBathModal from './Modals/LuxeBathModal/UpdateLuxeBathModal';
@@ -18,14 +19,13 @@ import DeleteConfirmationModal from './Modals/LuxeBathModal/DeleteLuxeBathModal'
 const LuxeBath = () => {
   const [categories, setCategories] = useState([]);
   const [luxeBathProducts, setLuxeBathProducts] = useState([]);
+  const [filteredLuxeBathProducts, setFilteredLuxeBathProducts] = useState([]);  // New state for filtered products
   const [selectedLuxeBathProductsImages, setSelectedLuxeBathProductsImages] = useState([]);
   const [showImagesModal, setShowImagesModal] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); 
   const [selectedLuxeBathProduct, setSelectedLuxeBathProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -50,7 +50,7 @@ const LuxeBath = () => {
   // Fetch all Luxe Bath Products
   useEffect(() => {
     const fetchLuxeBathProducts = async () => {
-      const fetchedLuxeBathProducts = await getAllLuxeBathProduct();
+      const fetchedLuxeBathProducts = await getAllProduct();
       if (fetchedLuxeBathProducts) {
         setLuxeBathProducts(fetchedLuxeBathProducts);
       }
@@ -58,19 +58,28 @@ const LuxeBath = () => {
     fetchLuxeBathProducts();
   }, []);
   
-  // Fetch all categories
+  // Fetch all categories and filter LuxeBath products
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await getAllCategory();
         setCategories(response.data);
+
+        // Find LuxeBath category by _id
+        const luxeBathCategory = response.data.find(category => category.name === 'LuxeBath');
+        
+        if (luxeBathCategory) {
+          // Filter products that match the LuxeBath category _id
+          const filteredProducts = luxeBathProducts.filter(product => product.category === luxeBathCategory._id);
+          setFilteredLuxeBathProducts(filteredProducts);  // Update filtered products
+        }
       } catch (error) {
         console.error('Error fetching categories:', error);
       }
     };
 
     fetchCategories();
-  }, []);
+  }, [luxeBathProducts]);  // Dependency on luxeBathProducts
 
   const handleShowImages = (luxeBathProduct) => {
     setSelectedLuxeBathProduct(luxeBathProduct);
@@ -125,8 +134,8 @@ const LuxeBath = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {luxeBathProducts.length > 0 ? (
-                    luxeBathProducts.map((product, index) => {
+                  {filteredLuxeBathProducts.length > 0 ? (
+                    filteredLuxeBathProducts.map((product, index) => {
                       const matchedCategory = categories.find(
                         (category) => category._id === product.category
                       );
@@ -141,22 +150,22 @@ const LuxeBath = () => {
                           <td>{product.stock_quantity}</td>
                           <td>{product.size}</td>
                           <td>
-                          {product.images.length > 0 && (
-                            <>
-                              <img
-                                src={product.images[0]}
-                                alt={product.name}
-                                style={{ width: '40px', height: 'auto' }}
-                              />
-                              <Button
-                                onClick={() => handleShowImages(product)}
-                                style={{ marginLeft: '5px', marginTop: '5px', padding: '5px 10px', fontSize: '9px' }}
-                              >
-                                Show All
-                              </Button>
-                            </>
-                          )}
-                        </td>
+                            {product.images.length > 0 && (
+                              <>
+                                <img
+                                  src={product.images[0]}
+                                  alt={product.name}
+                                  style={{ width: '40px', height: 'auto' }}
+                                />
+                                <Button
+                                  onClick={() => handleShowImages(product)}
+                                  style={{ marginLeft: '5px', marginTop: '5px', padding: '5px 10px', fontSize: '9px' }}
+                                >
+                                  Show All
+                                </Button>
+                              </>
+                            )}
+                          </td>
                           <td>{product.rating || "N/A"}</td>
                           <td>
                             <span
@@ -170,7 +179,8 @@ const LuxeBath = () => {
                             >
                               {product.status}
                             </span>
-                          </td>                          <td>
+                          </td>
+                          <td>
                             <span
                               onClick={() => openUpdateModal(product)}
                               className="mr-3"
@@ -196,7 +206,6 @@ const LuxeBath = () => {
                     </tr>
                   )}
                 </tbody>
-
               </Table>
             </Card>
           </div>
@@ -214,7 +223,6 @@ const LuxeBath = () => {
           toggle={closeDeleteModal}
           onDelete={handleDeleteLuxeBathProduct}
         />
-
       </Container>
     </>
   );

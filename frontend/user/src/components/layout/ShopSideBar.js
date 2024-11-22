@@ -38,7 +38,7 @@ const ShopSideBar = ({ onCategoryChange }) => {
         textDecoration: 'none',
     };
     const handleCategoryClick = (category) => {
-        onCategoryChange(category); // Notify parent about category selection
+        onCategoryChange(category);
       };
 
     return (
@@ -73,6 +73,34 @@ const ShopSideBar = ({ onCategoryChange }) => {
                                                 {categories.filter(category => !category.anime).map((category) => (
                                                 <li key={category.id}>
                                                     <a href="#" onClick={() => handleCategoryClick(category._id)} style={linkStyle}>{`${category.name}`}</a>
+                                                </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                        {/*Anime */}
+                        <div className="card">
+                            <div className="card-heading">
+                                <a
+                                    onClick={() => toggleAccordion('categories')}
+                                    data-toggle="collapse"
+                                    data-target="#collapseOne"
+                                    style={linkStyle}
+                                >
+                                    Anime
+                                </a>
+                            </div>
+                            {accordion.categories && (
+                                <div id="collapseOne" className="collapse show" data-parent="#accordionExample">
+                                    <div className="card-body">
+                                        <div className="shop__sidebar__categories">
+                                            <ul className="nice-scroll">
+                                                {categories.filter(category => category.anime).map((category) => (
+                                                <li key={category.id}>
+                                                    <a href="#" onClick={() => handleCategoryClick(category)} style={linkStyle}>{`${category.name}`}</a>
                                                 </li>
                                                 ))}
                                             </ul>

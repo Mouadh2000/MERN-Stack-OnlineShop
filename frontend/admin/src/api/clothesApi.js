@@ -2,7 +2,7 @@ import axiosInstance from "axiosApi";
 import Swal from 'sweetalert2';
 import "../assets/css/sweetAlertStyle.css";
 
-export const getAllLuxeBathProduct = async () => {
+export const getAllClothesProduct = async () => {
     try {
         const response = await axiosInstance.get('products/');
         return response.data;
@@ -10,7 +10,7 @@ export const getAllLuxeBathProduct = async () => {
         Swal.fire({
             icon: 'error',
             title: 'Error',
-            text: error.response?.data?.message || 'An error occurred while fetching luxebath.',
+            text: error.response?.data?.message || 'An error occurred while fetching clothes product.',
             customClass: {
                 container: 'custom-swal-container'
             }
@@ -19,13 +19,13 @@ export const getAllLuxeBathProduct = async () => {
     }
 };
 
-export const deleteLuxeBathProductById = async (luxeBathId) => {
+export const deleteClothesProductById = async (clothesId) => {
     try {
-        const response = await axiosInstance.delete(`luxebath/delete/${luxeBathId}/`);
+        const response = await axiosInstance.delete(`clothes/delete/${clothesId}/`);
         Swal.fire({
             icon: 'success',
             title: 'Deleted!',
-            text: 'The luxeBath Product has been deleted successfully.',
+            text: 'The clothes Product has been deleted successfully.',
             customClass: {
                 container: 'custom-swal-container'
             }
@@ -36,7 +36,7 @@ export const deleteLuxeBathProductById = async (luxeBathId) => {
             Swal.fire({
                 icon: 'error',
                 title: 'Permission Denied',
-                text: error.response?.data?.message || 'You do not have permission to delete this luxeBath Product.',
+                text: error.response?.data?.message || 'You do not have permission to delete this Clothes Product.',
                 customClass: {
                     container: 'custom-swal-container'
                 }
@@ -45,7 +45,7 @@ export const deleteLuxeBathProductById = async (luxeBathId) => {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: error.response?.data?.message || 'An error occurred while deleting the luxeBath character.',
+                text: error.response?.data?.message || 'An error occurred while deleting the clothes Product.',
                 customClass: {
                     container: 'custom-swal-container'
                 }
@@ -55,9 +55,9 @@ export const deleteLuxeBathProductById = async (luxeBathId) => {
     }
 };
 
-export const addLuxeBathProduct = async (luxeBathData) => {
+export const addClothesProduct = async (clothesData) => {
     try {
-        const response = await axiosInstance.post(`luxebath/create/`, luxeBathData, {
+        const response = await axiosInstance.post(`clothes/create/`, clothesData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -67,7 +67,7 @@ export const addLuxeBathProduct = async (luxeBathData) => {
             Swal.fire({
                 icon: 'success',
                 title: 'Success',
-                text: 'luxeBath product added successfully!',
+                text: 'clothes product added successfully!',
                 customClass: {
                     container: 'custom-swal-container'
                 }
@@ -75,7 +75,7 @@ export const addLuxeBathProduct = async (luxeBathData) => {
         }
         return response.data;
     } catch (error) {
-        const errorMessage = error.response?.data?.message || 'An error occurred while adding the luxeBath character.';
+        const errorMessage = error.response?.data?.message || 'An error occurred while adding the clothes Product.';
         
         Swal.fire({
             icon: 'error',
@@ -90,17 +90,16 @@ export const addLuxeBathProduct = async (luxeBathData) => {
     }
 };
 
-export const updateLuxeBathProduct = async (luxeBathId, luxeBathData) => {
+export const updateClothesProduct = async (clothesId, clothesData) => {
     try {
-        const response = await axiosInstance.put(`luxebath/update/${luxeBathId}/`, luxeBathData, {
+        const response = await axiosInstance.put(`clothes/update/${clothesId}/`, clothesData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
-        });
-        Swal.fire({
+        });        Swal.fire({
             icon: 'success',
             title: 'Success',
-            text: `luxeBath product updated successfully!`,
+            text: `clothes product updated successfully!`,
             customClass: {
                 container: 'custom-swal-container'
             }
@@ -111,7 +110,7 @@ export const updateLuxeBathProduct = async (luxeBathId, luxeBathData) => {
             Swal.fire({
                 icon: 'error',
                 title: 'Permission Denied',
-                text: error.response?.data?.message || 'You do not have permission to update this luxeBath product.',
+                text: error.response?.data?.message || 'You do not have permission to update this clothes product.',
                 customClass: {
                     container: 'custom-swal-container'
                 }
@@ -120,7 +119,7 @@ export const updateLuxeBathProduct = async (luxeBathId, luxeBathData) => {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: error.response?.data?.message || 'An error occurred while updating the luxeBath product.',
+                text: error.response?.data?.message || 'An error occurred while updating the clothes product.',
                 customClass: {
                     container: 'custom-swal-container'
                 }

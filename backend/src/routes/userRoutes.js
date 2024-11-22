@@ -1,9 +1,10 @@
-
 const express = require('express');
 const router = express.Router();
 const userAuthController = require('../controllers/user/userAuthController');
 const categoryController = require('../controllers/admin/categoryController');
 const ProductController = require('../controllers/admin/productController');
+const animeController = require('../controllers/admin/animeController');
+
 
 
 
@@ -38,6 +39,14 @@ router.get('/products/category/:category', (req, res) => {
     const controller = new ProductController(req, res, [], "read");
     controller.getProductsByCategory(category);
 });
+router.get('/product/:id/stock', (req, res) => {
+    const controller = new ProductController(req, res, [], "read");
+    controller.checkStock(req.params.id);
+});
+// Anime Routes
+router.get('/animes', animeController.getAllAnimes);
+router.get('/anime/:id', animeController.getAnimeById);
+
 
 
 

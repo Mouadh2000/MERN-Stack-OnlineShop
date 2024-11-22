@@ -66,17 +66,36 @@ class AnimeController {
     try {
       const { id } = req.params;
       const anime = await Anime.findById(id).populate('category');
-
+  
       if (!anime) {
         return res.status(404).json({ error: 'Anime not found' });
       }
-
+  
       const images = await AnimeImage.find({ anime: anime._id });
-      res.status(200).json({ anime, images });
+  
+      // Process images to return them as base64
+      const imagesWithBase64 = await Promise.all(images.map(async (image) => {
+        const fullPath = path.join(__dirname, '../../..', 'uploads', 'anime', image.filename); // Ensure correct path
+        
+        const imageExists = fs.existsSync(fullPath);
+        
+        if (imageExists) {
+          const imageBase64 = fs.readFileSync(fullPath, 'base64');
+          return `data:image/jpeg;base64,${imageBase64}`;
+        }
+        return null; // If image doesn't exist, return null
+      }));
+  
+      res.status(200).json({
+        anime,
+        images: imagesWithBase64.filter(image => image !== null) // Filter out null values
+      });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
   }
+  
+  
 
   async updateAnime(req, res) {
     try {

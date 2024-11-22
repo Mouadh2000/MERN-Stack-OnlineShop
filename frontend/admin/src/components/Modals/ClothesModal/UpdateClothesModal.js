@@ -1,25 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
-import { updateLuxeBathProduct } from 'api/luxeBathApi';
+import { SketchPicker } from 'react-color';
+import { updateClothesProduct } from 'api/clothesApi';
 import { getAllCategory } from 'api/categoryApi';
 
-const UpdateLuxeBathModal = ({ open, closeModal, luxeBathProduct }) => {
+const UpdateClothesModal = ({ open, closeModal, clothesProduct }) => {
   const initialFormData = {
     name: '',
     description: '',
-    category: luxeBathProduct ? luxeBathProduct.category : '',
+    category: clothesProduct ? clothesProduct.category : '',
     status: 'Inactive',
     price: '',
     discount: '',
     stock_quantity: '',
     size: '',
     images: [],
+    colors: [],
   };
 
   const [formData, setFormData] = useState(initialFormData);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [categories, setCategories] = useState([]);
   const [previewImages, setPreviewImages] = useState([]);
+  const [newColor, setNewColor] = useState('');
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -37,22 +40,22 @@ const UpdateLuxeBathModal = ({ open, closeModal, luxeBathProduct }) => {
   }, [open]);
 
   useEffect(() => {
-    if (luxeBathProduct) {
+    if (clothesProduct) {
       setFormData({
-        name: luxeBathProduct.name || '',
-        description: luxeBathProduct.description || '',
-        price: luxeBathProduct.price || '',
-        discount: luxeBathProduct.discount || 0,
-        stock_quantity: luxeBathProduct.stock_quantity || '',
-        size: luxeBathProduct.size || '',
-        status: luxeBathProduct.status || 'Inactive',
-        category: luxeBathProduct.category || '',
-        images: [], 
-      });
-
-      setPreviewImages(luxeBathProduct.images || []);
+        name: clothesProduct.name || '',
+        description: clothesProduct.description || '',
+        price: clothesProduct.price || '',
+        discount: clothesProduct.discount || 0,
+        stock_quantity: clothesProduct.stock_quantity || '',
+        size: clothesProduct.size || '',
+        status: clothesProduct.status || 'Inactive',
+        category: clothesProduct.category || '',
+        images: [],
+        colors: clothesProduct.colors || [],
+    });
+      setPreviewImages(clothesProduct.images || []);
     }
-  }, [luxeBathProduct]);
+  }, [clothesProduct]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -68,20 +71,31 @@ const UpdateLuxeBathModal = ({ open, closeModal, luxeBathProduct }) => {
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-    
     const updatedImages = [...formData.images, ...files];
-    
     setFormData({ ...formData, images: updatedImages });
-    
     const previews = [...previewImages, ...files.map((file) => URL.createObjectURL(file))];
     setPreviewImages(previews);
   };
 
   const handleRemoveImage = (index) => {
     const updatedPreviews = previewImages.filter((_, i) => i !== index);
-    const updatedFormFiles = formData.images.filter((_, i) => i !== index);    
+    const updatedFormFiles = formData.images.filter((_, i) => i !== index);
     setPreviewImages(updatedPreviews);
     setFormData({ ...formData, images: updatedFormFiles });
+  };
+
+  const handleAddColor = () => {
+    if (newColor && !formData.colors.includes(newColor)) {
+      setFormData({ ...formData, colors: [...formData.colors, newColor] });
+      setNewColor('');
+    }
+  };
+
+  const handleRemoveColor = (color) => {
+    setFormData({
+      ...formData,
+      colors: formData.colors.filter((existingColor) => existingColor !== color),
+    });
   };
 
   const handleSave = async () => {
@@ -98,16 +112,18 @@ const UpdateLuxeBathModal = ({ open, closeModal, luxeBathProduct }) => {
     formPayload.append('size', formData.size);
     formPayload.append('uploadType', 'Product');
 
-    formData.images.forEach((file) => {
-      formPayload.append('images', file);
+    formData.colors.forEach(color => {
+        formPayload.append('colors[]', color);
     });
-
+    formData.images.forEach((file) => {
+        formPayload.append('images', file);
+      });
 
     try {
-      await updateLuxeBathProduct(luxeBathProduct._id, formPayload);
+      await updateClothesProduct(clothesProduct._id, formPayload);
       resetFormAndCloseModal();
     } catch (error) {
-      console.error('Error updating luxeBathProduct product:', error);
+      console.error('Error updating clothesProduct:', error);
     } finally {
       setIsSubmitting(false);
     }
@@ -123,13 +139,13 @@ const UpdateLuxeBathModal = ({ open, closeModal, luxeBathProduct }) => {
     <Modal show={open} onHide={resetFormAndCloseModal} aria-labelledby="ModalHeader" centered>
       <Modal.Header closeButton>
         <Modal.Title id="ModalHeader">
-          <h2>Update LuxeBath Product</h2>
+          <h2>Update clothes Product</h2>
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form>
           {/* Product Name */}
-          <Form.Group controlId="formLuxeBathName" style={{ marginBottom: '15px' }}>
+          <Form.Group controlId="formclothesName" style={{ marginBottom: '15px' }}>
             <Form.Control
               type="text"
               placeholder="Product Name"
@@ -214,6 +230,45 @@ const UpdateLuxeBathModal = ({ open, closeModal, luxeBathProduct }) => {
               style={{ width: '100%' }}
             />
           </Form.Group>
+          {/* Colors */}
+          <Form.Group controlId="formColors" style={{ marginBottom: '15px' }}>
+            <Form.Label>Colors:</Form.Label>
+            <div style={{ marginBottom: '10px' }}>
+                {formData.colors.map((color, index) => (
+                <div key={index} style={{ display: 'inline-block', margin: '5px', padding: '5px' }}>
+                <Button
+                    key={index}
+                    variant="secondary"
+                    style={{
+                    margin: '5px',
+                    backgroundColor: color,
+                    color: 'white',
+                    }}
+                    onClick={() => handleRemoveColor(color)}
+                >
+                    {color}
+                </Button>
+                <Button
+                variant="danger"
+                size="sm"
+                style={{ marginLeft: '5px', backgroundColor: 'red', borderColor: 'red' }}
+                onClick={() => handleRemoveColor(color)}
+              >
+                X
+              </Button>
+              </div>
+                ))}
+            </div>
+            {/* Color Picker */}
+            <SketchPicker
+                color={newColor || '#fff'}
+                onChangeComplete={(color) => setNewColor(color.hex)}
+                disableAlpha
+            />
+            <Button variant="primary" onClick={handleAddColor} style={{ marginTop: '10px' }}>
+                Add Color
+            </Button>
+          </Form.Group>
           {/* Status Toggle */}
           <Form.Group controlId="formStatus" style={{ marginBottom: '15px' }}>
             <Form.Label>Status:</Form.Label>
@@ -222,31 +277,35 @@ const UpdateLuxeBathModal = ({ open, closeModal, luxeBathProduct }) => {
               style={{
                 width: '100%',
                 backgroundColor: formData.status === 'Active' ? 'green' : 'red',
-                color: 'white',
               }}
             >
               {formData.status === 'Active' ? 'Active' : 'Inactive'}
             </Button>
           </Form.Group>
           {/* Image Upload */}
-          <Form.Group controlId="formImages" style={{ marginBottom: '15px' }}>
+          <Form.Group controlId="formImage" style={{ marginBottom: '15px' }}>
             <Form.Label>Upload Images:</Form.Label>
             <Form.Control
               type="file"
               multiple
               onChange={handleImageChange}
-              style={{ width: '100%' }}
+              style={{ marginBottom: '10px' }}
             />
-            <div className="mt-3">
-              {previewImages.map((imgSrc, index) => (
+            <div>
+              {previewImages.map((image, index) => (
                 <div key={index} style={{ display: 'inline-block', margin: '5px' }}>
                   <img
-                    src={imgSrc}
-                    alt={`Preview ${index}`}
-                    style={{ width: '100px', height: 'auto' }}
+                    src={image}
+                    alt="Preview"
+                    style={{ width: '50px', height: '50px', objectFit: 'cover' }}
                   />
-                  <Button variant="danger" size="sm" onClick={() => handleRemoveImage(index)}>
-                    Remove
+                  <Button
+                    variant="danger"
+                    size="sm"
+                    onClick={() => handleRemoveImage(index)}
+                    style={{ position: 'absolute', marginTop: '-20px', marginLeft: '-15px' }}
+                  >
+                    X
                   </Button>
                 </div>
               ))}
@@ -255,19 +314,15 @@ const UpdateLuxeBathModal = ({ open, closeModal, luxeBathProduct }) => {
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={resetFormAndCloseModal}>
+        <Button variant="secondary" onClick={resetFormAndCloseModal} disabled={isSubmitting}>
           Cancel
         </Button>
-        <Button
-          variant="primary"
-          onClick={handleSave}
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? 'Saving...' : 'Save Changes'}
+        <Button variant="primary" onClick={handleSave} disabled={isSubmitting}>
+          Save
         </Button>
       </Modal.Footer>
     </Modal>
   );
 };
 
-export default UpdateLuxeBathModal;
+export default UpdateClothesModal;

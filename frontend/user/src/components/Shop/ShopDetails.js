@@ -9,6 +9,8 @@ const ShopDetails = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null); // State for the main image
+
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -17,6 +19,8 @@ const ShopDetails = () => {
         const data = await getProductsById(productId);
         if (data) {
           setProduct(data);
+          setSelectedImage(data.images[0]); // Set the first image as the default main image
+
         } else {
           setError('Product not found');
         }
@@ -72,8 +76,9 @@ const ShopDetails = () => {
                     <a
                       className={`nav-link ${index === 0 ? 'active' : ''}`}
                       data-toggle="tab"
-                      href={`#tabs-${index + 1}`}
+                      onClick={() => setSelectedImage(image)} // Update the selected image
                       role="tab"
+                      style={{ cursor: 'pointer' }}
                     >
                       <div
                         className="product__thumb__pic set-bg"
@@ -94,7 +99,7 @@ const ShopDetails = () => {
                     key={index}
                   >
                     <div className="product__details__pic__item">
-                      <img src={image} alt={product.name} />
+                      <img src={selectedImage} alt={product.name} />
                     </div>
                   </div>
                 ))}
@@ -124,12 +129,18 @@ const ShopDetails = () => {
                 <p>{product.description}</p>
                 <div className="product__details__option">
                   <div className="product__details__option__size">
-                    <span>Size:</span> {product.size}
+                    <span>Size:</span>
+                     {product.size.split(',').map((size, index) => (
+                        <label htmlFor={size.toLowerCase()} key={index} className={index === 1 ? 'active' : ''}>
+                          {size.toLowerCase()}
+                          <input type="radio" id={size.toLowerCase()} name="size" value={size.toLowerCase()} />
+                        </label>
+                      ))}
                   </div>
-                  {product.color && (
+                  {product.colors && (
                     <div className="product__details__option__color">
                       <span>Color:</span>
-                      {product.color.map((color, index) => (
+                      {product.colors.map((color, index) => (
                         <label key={index} style={{ backgroundColor: color }}></label>
                       ))}
                     </div>

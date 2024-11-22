@@ -8,6 +8,7 @@ const categoryController = require('../controllers/admin/categoryController');
 const animeController = require('../controllers/admin/animeController');
 const ProductController = require('../controllers/admin/productController');
 const LuxeBathController = require('../controllers/admin/luxeBathController');
+const ClothesController = require('../controllers/admin/clothesController');
 
 const AuthenticateAdmin = require('../middleware/AuthenticateAdmin');
 
@@ -77,5 +78,22 @@ router.delete('/luxebath/delete/:id', authMiddleware.authenticate.bind(authMiddl
 
     luxeBathController.deleteLuxeBath(productId);
 });
+
+// Clothes Routes
+router.post('/clothes/create',authMiddleware.authenticate.bind(authMiddleware),upload.array('images', 10), (req, res) => {
+    const clothesController = new ClothesController(req, res);
+    clothesController.createClothesProduct();
+  });
+router.put('/clothes/update/:id',authMiddleware.authenticate.bind(authMiddleware),upload.array('images', 10), (req, res) => {
+    const clothesController = new ClothesController(req, res, [], "update");
+    const productId = req.params.id;
+    clothesController.updateClothesProduct(productId);
+  });
+router.delete('/clothes/delete/:id', authMiddleware.authenticate.bind(authMiddleware), (req, res) => {
+    const clothesController = new ClothesController(req, res, [], "delete");
+    const productId = req.params.id;
+    clothesController.deleteClothesProduct(productId);
+});
+
 
 module.exports = router;

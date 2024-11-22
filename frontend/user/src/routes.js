@@ -7,6 +7,7 @@ import Checkout from "./components/Checkout/Checkout";
 import ShopDetails from "./components/Shop/ShopDetails";
 import SignIn from "./components/Authentication/SignIn";
 import SignUp from "./components/Authentication/SignUp";
+import AnimeDetails from "./components/Shop/AnimeDetails";
 
 const routes = [
   {
@@ -37,6 +38,10 @@ const routes = [
   {
     path: "/shop-details/:productId",
     element: <ShopDetails />,
+  },
+  {
+    path: "/anime-details/:productId",
+    element: <AnimeDetails />,
   },
   {
     path: "/sign-in",
