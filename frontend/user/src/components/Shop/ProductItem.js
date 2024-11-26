@@ -4,7 +4,7 @@ import { heart, compare, search } from '../Icons/Icons';
 import { useNavigate } from 'react-router-dom';
 import { checkProductStock } from '../Api/productApi';  // Import the stock check API
 
-const ProductItem = ({ products }) => {
+const ProductItem = ({ products, onAddToCart }) => {
   const navigate = useNavigate();
   const [stockStatus, setStockStatus] = useState({});  // State to store stock status
 
@@ -27,6 +27,14 @@ const ProductItem = ({ products }) => {
       checkStock(product._id);
     });
   }, [products]);  // Re-run when products change
+
+  const handleAddToCart = (product) => {
+    if (stockStatus[product._id]) {
+      onAddToCart(product);  // Call the parent function to add the product to the cart
+    } else {
+      alert('This product is out of stock.');
+    }
+  };
 
   return (
     <>
@@ -63,7 +71,11 @@ const ProductItem = ({ products }) => {
                 <p style={{ color: stockStatus[product._id] ? 'green' : 'red' }}>
                   {stockStatus[product._id] ? 'In Stock' : 'Out of Stock'}
                 </p>
-                <a href="#" className="add-cart">
+                <a
+                  href="#"
+                  className="add-cart"
+                  onClick={() => handleAddToCart(product)}
+                >
                   + Add To Cart
                 </a>
                 <div className="rating">
@@ -96,6 +108,7 @@ ProductItem.propTypes = {
       rating: PropTypes.number.isRequired,
     })
   ),
+  onAddToCart: PropTypes.func.isRequired,  // New prop for adding to the cart
 };
 
 export default ProductItem;

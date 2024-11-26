@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import logo from '../../assets/img/logo.png';
 import heart from '../../assets/img/icon/heart.png';
 import cart from '../../assets/img/icon/cart.png';
-import { Form, FormControl } from 'react-bootstrap'; 
-
+import { Form, FormControl } from 'react-bootstrap';
+import { useCart } from '../../context/CartContext';
 const Header = () => {
-  const location = useLocation(); 
+  const { cartItems } = useCart(); // Access cart items from context
+  const location = useLocation();
   const [fix, setFix] = useState(false);
 
   const setFixed = () => {
@@ -42,7 +43,6 @@ const Header = () => {
 
   return (
     <>
-      {/* Header Section Begin */}
       <header className="header" style={headerStyle}>
         <div className="container" style={{height: '90px'}}>
           <div className="row">
@@ -73,7 +73,6 @@ const Header = () => {
             </div>
             <div className="col-lg-3 col-md-3">
               <div className="header__nav__option" style={{ marginLeft: '-140px', display: 'flex' }}>
-                {/* Replacing the search button with a search input and icon */}
                 <div className="search-container">
                   <Form inline className="search-form">
                     <FormControl type="text" placeholder="Search" className="search-input" />
@@ -85,15 +84,14 @@ const Header = () => {
                 </Link>
                 <Link to="/cart">
                   <img src={cart} alt="Cart Icon" />
-                  <span>0</span>
+                  <span>{cartItems.length}</span> {/* Display number of items in cart */}
                 </Link>
-                <div className="price">$0.00</div>
+                <div className="price">{cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2)} DT</div> {/* Show total price */}
               </div>
             </div>
           </div>
         </div>
       </header>
-      {/* Header Section End */}
     </>
   );
 };

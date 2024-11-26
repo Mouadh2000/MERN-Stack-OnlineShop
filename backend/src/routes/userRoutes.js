@@ -4,7 +4,7 @@ const userAuthController = require('../controllers/user/userAuthController');
 const categoryController = require('../controllers/admin/categoryController');
 const ProductController = require('../controllers/admin/productController');
 const animeController = require('../controllers/admin/animeController');
-
+const ClothesController = require('../controllers/admin/clothesController');
 
 
 
@@ -47,6 +47,11 @@ router.get('/product/:id/stock', (req, res) => {
 router.get('/animes', animeController.getAllAnimes);
 router.get('/anime/:id', animeController.getAnimeById);
 
+// Route for customizing a product
+router.post('/customize-product', (req, res) => {
+    const controller = new ClothesController(req, res, 'createCustomizedProduct');
+    controller.createCustomizedProduct();
+});
 
 
 

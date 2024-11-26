@@ -5,9 +5,12 @@ import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import routes from './routes';
 import ProtectedRoute from './context/ProtectedRoute';
+import { CartProvider } from './context/CartContext'; // Import the CartProvider
+
 function App() {
   return (
     <>
+    <CartProvider>
       <OffcanvasMenu />
       <Header />
       <Routes>
@@ -25,6 +28,7 @@ function App() {
         ))}
       </Routes>
       <Footer />
+    </CartProvider>
     </>
   );
 }

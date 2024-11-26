@@ -151,6 +151,11 @@ const ShopDetails = () => {
                     Add to cart
                   </a>
                 </div>
+                <div className="product__details__cart__option">
+                  <a href="#" className="primary-btn">
+                    Customize Product
+                  </a>
+                </div>
                 <div className="product__details__btns__option">
                   <a href="#">
                     <i className="fa fa-heart"></i> Add to wishlist
@@ -161,14 +166,12 @@ const ShopDetails = () => {
                     <span>Guaranteed Safe Checkout</span>
                   </h5>
                   <ul>
-                  <li>
-                    <span>Category: </span> 
-                    {Array.isArray(categories?.data) 
-                      ? categories.data.find(category => category._id === product.category)?.name || 'Category not found' 
-                      : 'Categories data is not available'}
-                  </li>
-
-
+                    <li>
+                      <span>Category: </span> 
+                      {Array.isArray(categories?.data) 
+                        ? categories.data.find(category => category._id === product.category)?.name || 'Category not found' 
+                        : 'Categories data is not available'}
+                    </li>
                   </ul>
                 </div>
               </div>

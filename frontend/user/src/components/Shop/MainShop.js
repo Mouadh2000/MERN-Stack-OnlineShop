@@ -2,28 +2,29 @@ import React, { useEffect, useState } from 'react';
 import ShopSideBar from '../layout/ShopSideBar';
 import Breadcrumb from './BreadCrumb';
 import ProductItem from './ProductItem';
-import AnimeItem from './AnimeItem';  // Import AnimeItem
+import AnimeItem from './AnimeItem';
 import { getProductsByCategory, getAllProduct } from '../Api/productApi';
 import { getAllAnime } from '../Api/animeApi';
+import { useCart } from '../../context/CartContext';
 const MainShop = () => {
+  const { handleAddToCart } = useCart(); // Access add-to-cart function from global context
   const [selectedCategory, setSelectedCategory] = useState('');
   const [products, setProducts] = useState([]);
-  const [isAnimeCategory, setIsAnimeCategory] = useState(false); // Track if anime category is selected
+  const [isAnimeCategory, setIsAnimeCategory] = useState(false);
 
   const fetchProducts = async (category) => {
     if (category) {
-      console.log(category.name);
       if (category.anime) {
-        setIsAnimeCategory(true); 
-        const data = await getAllAnime(); // Fetch anime products
+        setIsAnimeCategory(true);
+        const data = await getAllAnime();
         if (data) setProducts(data);
       } else {
-        setIsAnimeCategory(false); // Set to false for non-anime category
-        const data = await getProductsByCategory(category); // Fetch non-anime products
+        setIsAnimeCategory(false);
+        const data = await getProductsByCategory(category);
         if (data) setProducts(data);
       }
     } else {
-      const data = await getAllProduct(); // Fetch all products if no category selected
+      const data = await getAllProduct();
       if (data) setProducts(data);
     }
   };
@@ -34,7 +35,7 @@ const MainShop = () => {
 
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);
-    setProducts([]);  // Clear products when a new category is selected
+    setProducts([]);
   };
 
   return (
@@ -64,9 +65,9 @@ const MainShop = () => {
               </div>
               <div className="row">
                 {isAnimeCategory ? (
-                  <AnimeItem products={products} />  // Render AnimeItem when anime category is selected
+                  <AnimeItem products={products} onAddToCart={handleAddToCart} />
                 ) : (
-                  <ProductItem products={products} />  // Render regular ProductItem for non-anime categories
+                  <ProductItem products={products} onAddToCart={handleAddToCart} />
                 )}
               </div>
               <div className="row">
